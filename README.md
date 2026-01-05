@@ -5,8 +5,8 @@ Projeto Next.js 15 com TypeScript, Tailwind e Supabase para gerenciar linhas 3G.
 Setup rápido
 
 1. Copie `.env.example` para `.env.local` e preencha as variáveis (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY).
-2. Instale dependências: `npm install` ou `pnpm install`.
-3. Rode localmente: `npm run dev`.
+
+> Nota: Para operações sensíveis no servidor (upload de faturas assinado, criação/edição protegida), defina `SUPABASE_SERVICE_ROLE_KEY` com a chave `service_role` do seu projeto Supabase. Em desenvolvimento, o código aceita `NEXT_PUBLIC_SUPABASE_ANON_KEY` como fallback (inseguro) — preferível apenas para testes locais. 2. Instale dependências: `npm install` ou `pnpm install`. 3. Rode localmente: `npm run dev`.
 
 Criação das tabelas
 
@@ -35,7 +35,12 @@ Aplicando RLS (Row Level Security)
    - `public.is_master_admin()` - helper function to check admin role
    - Policies for `users`, `lines`, `requests`, `invoices`, `line_movements`, `cancel_criteria`, `cancel_evaluation`, `clients`, `units`.
 3. Observação: mudanças sensíveis (como alteração de roles) também são verificadas server-side nas rotas (veja `/api/users` e middleware em `src/lib/auth.ts`).
+Importando linhas por planilha
 
+1. A página de import (`/import`) permite fazer upload de um CSV com colunas (ex.: `Número`, `Cliente`, `Unidade`, `OperadoraReal`, `OperadoraAtual`, `Valor Mensal`, `Status`).
+2. O sistema analisa diferenças entre o CSV e o banco e mostra 3 categorias: **Novas**, **Modificadas**, **Ausentes**.
+3. Para cada divergência você deve fornecer uma justificativa e confirmar a ação (criar, atualizar ou marcar como removida). As alterações são aplicadas apenas após confirmação.
+4. Aplicar as alterações requer **Master Admin** (verifique o perfil no painel `Configurações`). As justificativas e registros de import ficam armazenados nas tabelas `import_runs` e `line_import_changes`.
 Storage (Faturas)
 
 - Crie um bucket chamado `invoices` no Supabase Storage (pelo painel ou CLI).
