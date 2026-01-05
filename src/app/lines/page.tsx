@@ -1,5 +1,7 @@
 import React from "react";
 import Table from "~/components/Table";
+import dynamic from "next/dynamic";
+const AddLineForm = dynamic(() => import("~/components/AddLineForm"), { ssr: false });
 
 async function fetchLines() {
   const res = await fetch(
@@ -31,9 +33,9 @@ export default async function LinesPage() {
             placeholder="Buscar por número"
             className="border rounded px-3 py-2"
           />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Exportar CSV
-          </button>
+          <a href="/import" className="px-4 py-2 bg-indigo-600 text-white rounded">Importar CSV</a>
+          <button className="bg-blue-600 text-white px-4 py-2 rounded">Exportar CSV</button>
+          <div className="ml-2"><AddLineForm /></div>
         </div>
       </div>
       <Table columns={columns} data={data || []} />

@@ -30,9 +30,30 @@ export default function ImportPage() {
       setAnalysis(data);
       // initialize selected changes default to true for divergent items
       const changes: any[] = [];
-      (data.new || []).forEach((r: any) => changes.push({ type: "add", number: r.number, data: r, justification: "" }));
-      (data.modified || []).forEach((r: any) => changes.push({ type: "update", number: r.number, data: r.new, justification: "" }));
-      (data.missing || []).forEach((r: any) => changes.push({ type: "mark_removed", number: r.number, data: r.data, justification: "" }));
+      (data.new || []).forEach((r: any) =>
+        changes.push({
+          type: "add",
+          number: r.number,
+          data: r,
+          justification: "",
+        })
+      );
+      (data.modified || []).forEach((r: any) =>
+        changes.push({
+          type: "update",
+          number: r.number,
+          data: r.new,
+          justification: "",
+        })
+      );
+      (data.missing || []).forEach((r: any) =>
+        changes.push({
+          type: "mark_removed",
+          number: r.number,
+          data: r.data,
+          justification: "",
+        })
+      );
       setSelectedChanges(changes);
     } catch (e) {
       alert(String(e));
@@ -50,7 +71,12 @@ export default function ImportPage() {
   }
 
   async function applyChanges() {
-    if (!confirm("Aplicar alterações selecionadas? Isso pode editar e criar linhas no banco.")) return;
+    if (
+      !confirm(
+        "Aplicar alterações selecionadas? Isso pode editar e criar linhas no banco."
+      )
+    )
+      return;
     setLoading(true);
     try {
       const payload = selectedChanges.filter((c) => c.apply !== false);
@@ -74,7 +100,9 @@ export default function ImportPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Importar Clientes/Unidades</h2>
+      <h2 className="text-2xl font-semibold mb-4">
+        Importar Clientes/Unidades
+      </h2>
       <div className="space-y-4">
         <FileUploader onFiles={handleFiles} />
         {preview.length > 0 && (
@@ -84,7 +112,11 @@ export default function ImportPage() {
               {JSON.stringify(preview.slice(0, 10), null, 2)}
             </pre>
             <div className="flex gap-2 mt-2">
-              <button onClick={analyze} className="px-4 py-2 bg-blue-600 text-white rounded" disabled={loading}>
+              <button
+                onClick={analyze}
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                disabled={loading}
+              >
                 Analisar diferenças
               </button>
             </div>
@@ -106,10 +138,26 @@ export default function ImportPage() {
                     <div className="font-medium">{r.number}</div>
                     <div className="text-sm">Cliente: {r.client_name}</div>
                     <div className="mt-2">
-                      <textarea placeholder="Justificativa (opcional)" className="w-full border p-1" value={selectedChanges.find((c:any)=>c.number===r.number)?.justification||""} onChange={(e)=>{
-                        const index = selectedChanges.findIndex((c:any)=>c.number===r.number && c.type==='add');
-                        if(index>=0) updateChange(index, { justification: e.target.value, apply:true });
-                      }}/>
+                      <textarea
+                        placeholder="Justificativa (opcional)"
+                        className="w-full border p-1"
+                        value={
+                          selectedChanges.find(
+                            (c: any) => c.number === r.number
+                          )?.justification || ""
+                        }
+                        onChange={(e) => {
+                          const index = selectedChanges.findIndex(
+                            (c: any) =>
+                              c.number === r.number && c.type === "add"
+                          );
+                          if (index >= 0)
+                            updateChange(index, {
+                              justification: e.target.value,
+                              apply: true,
+                            });
+                        }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -121,12 +169,30 @@ export default function ImportPage() {
                   <div key={r.number} className="p-2 border rounded mb-2">
                     <div className="font-medium">{r.number}</div>
                     <div className="text-sm">Diferenças:</div>
-                    <pre className="text-xs bg-slate-50 p-1 rounded">{JSON.stringify(r.diffs, null, 2)}</pre>
+                    <pre className="text-xs bg-slate-50 p-1 rounded">
+                      {JSON.stringify(r.diffs, null, 2)}
+                    </pre>
                     <div className="mt-2">
-                      <textarea placeholder="Justificativa" className="w-full border p-1" value={selectedChanges.find((c:any)=>c.number===r.number)?.justification||""} onChange={(e)=>{
-                        const index = selectedChanges.findIndex((c:any)=>c.number===r.number && c.type==='update');
-                        if(index>=0) updateChange(index, { justification: e.target.value, apply:true });
-                      }}/>
+                      <textarea
+                        placeholder="Justificativa"
+                        className="w-full border p-1"
+                        value={
+                          selectedChanges.find(
+                            (c: any) => c.number === r.number
+                          )?.justification || ""
+                        }
+                        onChange={(e) => {
+                          const index = selectedChanges.findIndex(
+                            (c: any) =>
+                              c.number === r.number && c.type === "update"
+                          );
+                          if (index >= 0)
+                            updateChange(index, {
+                              justification: e.target.value,
+                              apply: true,
+                            });
+                        }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -139,10 +205,26 @@ export default function ImportPage() {
                     <div className="font-medium">{r.number}</div>
                     <div className="text-sm">Status atual: {r.data.status}</div>
                     <div className="mt-2">
-                      <textarea placeholder="Justificativa (por que remover?)" className="w-full border p-1" value={selectedChanges.find((c:any)=>c.number===r.number)?.justification||""} onChange={(e)=>{
-                        const index = selectedChanges.findIndex((c:any)=>c.number===r.number && c.type==='mark_removed');
-                        if(index>=0) updateChange(index, { justification: e.target.value, apply:true });
-                      }}/>
+                      <textarea
+                        placeholder="Justificativa (por que remover?)"
+                        className="w-full border p-1"
+                        value={
+                          selectedChanges.find(
+                            (c: any) => c.number === r.number
+                          )?.justification || ""
+                        }
+                        onChange={(e) => {
+                          const index = selectedChanges.findIndex(
+                            (c: any) =>
+                              c.number === r.number && c.type === "mark_removed"
+                          );
+                          if (index >= 0)
+                            updateChange(index, {
+                              justification: e.target.value,
+                              apply: true,
+                            });
+                        }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -150,7 +232,11 @@ export default function ImportPage() {
             </div>
 
             <div className="mt-4 flex gap-2">
-              <button onClick={applyChanges} className="px-4 py-2 bg-green-600 text-white rounded" disabled={loading}>
+              <button
+                onClick={applyChanges}
+                className="px-4 py-2 bg-green-600 text-white rounded"
+                disabled={loading}
+              >
                 Aplicar alterações
               </button>
             </div>
