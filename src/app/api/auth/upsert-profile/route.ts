@@ -8,6 +8,13 @@ export async function POST(req: Request) {
     if (!user?.id)
       return NextResponse.json({ error: "Missing user id" }, { status: 400 });
 
+    const allowedDomain = "@solvis.com.br";
+    const email = (user.email || "").toString().toLowerCase();
+
+    if (!email || !email.endsWith(allowedDomain)) {
+      return NextResponse.json({ error: "Email domain not allowed. Please use your @solvis.com.br email." }, { status: 403 });
+    }
+
     const payload = {
       user_id: user.id,
       email: user.email ?? null,

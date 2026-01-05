@@ -30,7 +30,7 @@ export default function useSupabaseAuth() {
       async (_event, session) => {
         const user = session?.user;
         if (user) {
-          await fetch("/api/auth/upsert-profile", {
+          const res = await fetch("/api/auth/upsert-profile", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -41,6 +41,14 @@ export default function useSupabaseAuth() {
               },
             }),
           });
+          if (res.status === 403) {
+            // Not allowed domain — sign out and inform user
+            try {
+              await supabase.auth.signOut();
+            } catch (e) {}
+            const body = await res.json().catch(() => ({}));
+            alert(body?.error || "Email domain not allowed. Use your @solvis.com.br email.");
+          }
         }
       }
     );

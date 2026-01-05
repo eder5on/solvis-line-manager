@@ -6,7 +6,17 @@ Setup rápido
 
 1. Copie `.env.example` para `.env.local` e preencha as variáveis (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY).
 
-> Nota: Para operações sensíveis no servidor (upload de faturas assinado, criação/edição protegida), defina `SUPABASE_SERVICE_ROLE_KEY` com a chave `service_role` do seu projeto Supabase. Em desenvolvimento, o código aceita `NEXT_PUBLIC_SUPABASE_ANON_KEY` como fallback (inseguro) — preferível apenas para testes locais. 2. Instale dependências: `npm install` ou `pnpm install`. 3. Rode localmente: `npm run dev`.
+> Nota: Para operações sensíveis no servidor (upload de faturas assinado, criação/edição protegida), defina `SUPABASE_SERVICE_ROLE_KEY` com a chave `service_role` do seu projeto Supabase. Em desenvolvimento, o código aceita `NEXT_PUBLIC_SUPABASE_ANON_KEY` como fallback (inseguro) — preferível apenas para testes locais.
+
+2. Instale dependências: `npm install` ou `pnpm install`.
+3. Rode localmente: `npm run dev`.
+
+Autenticação
+
+- O sistema restringe logins apenas para emails do domínio `@solvis.com.br`.
+- A validação é feita no front-end (página de login) e novamente no servidor pela rota `POST /api/auth/upsert-profile`; logins com domínio diferente são rejeitados com status 403 e o usuário será desconectado.
+- Para permitir um usuário como `master_admin`, atualize a tabela `users` no banco conforme a seção "Como criar um Master Admin" abaixo.
+
 
 Criação das tabelas
 

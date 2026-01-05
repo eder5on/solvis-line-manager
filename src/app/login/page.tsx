@@ -7,6 +7,10 @@ export default function LoginPage() {
 
   async function handleLogin() {
     if (!email) return alert("Informe um email");
+    const allowedDomain = "@solvis.com.br";
+    if (!email.toLowerCase().endsWith(allowedDomain)) {
+      return alert("Somente emails @solvis.com.br são permitidos. Use seu email institucional.");
+    }
     const { error } = await supabase.auth.signInWithOtp({ email });
     if (error) {
       alert(error.message);
